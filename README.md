@@ -32,6 +32,7 @@ The objective is to guess the secret word with the correct number of bulls and c
 - Automatic guessing by the computer.
 - Configurable to switch between manual and automatic modes.
 - Supports both manual and automatic answerers.
+- Modular view system to separate game logic from display logic.
 
 ## Installation
 
@@ -54,20 +55,14 @@ The objective is to guess the secret word with the correct number of bulls and c
    ```
 
 3. **Game Modes**:
-   - **Manual Guesser**: You enter guesses manually.
-   - **Auto Guesser**: The computer generates guesses automatically.
-   - **Manual Answerer**: You provide feedback manually.
-   - **Auto Answerer**: The computer provides feedback automatically.
-
-4. **Switching Modes**:
-   - You can switch between manual and automatic modes using command-line arguments:
-     - `--manual-guesser`: Use manual guesser (default is automatic).
-     - `--manual-answerer`: Use manual answerer (default is automatic).
-
-   Example:
-   ```bash
-   python game.py --manual-guesser --manual-answerer
-   ```
+   - **Mode 1: Guess the Word!**: The computer thinks of a word, and you play against it by entering guesses.
+     - Command: `python game.py --manual-guesser`
+   - **Mode 2: Stump the Computer!**: You think of a word, and answer while the computer guesses.
+     - Command: `python game.py --manual-answerer`
+   - **Mode 3: Pass and Play!**: You and your friend can answer/guess side by side.
+     - Command: `python game.py --manual-guesser --manual-answerer`
+   - **Mode 4: Spectate!**: Watch the computer play the game :)
+     - Command: `python game.py`
 
 ## Code Structure
 
@@ -75,6 +70,7 @@ The objective is to guess the secret word with the correct number of bulls and c
   - **`game_controller.py`**: Manages the game flow and interactions between guessers and answerers.
   - **`guesser.py`**: Contains the `Guesser`, `ManualGuesser`, and `AutoGuesser` classes.
   - **`answerer.py`**: Contains the `Answerer`, `ManualAnswerer`, and `AutoAnswerer` classes.
+  - **`view.py`**: Contains the `GameView`, and `TextualView` class for displaying game information.
   - **`utils.py`**: Contains utility functions like `load_words` and `parse_response`.
 
 - **`4-letter-words.txt`**: The word list file.
