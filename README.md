@@ -1,5 +1,12 @@
 # Bulls and Cows Game
 
+         (__)
+         (oo)
+  /-------\/
+ / |     ||
+*  ||----||
+   ^^    ^^
+
 Welcome to the Bulls and Cows game! This is a classic code-breaking game where the player tries to guess a secret word, and the game provides feedback in terms of "bulls" and "cows."
 
 ## Game Overview
@@ -22,7 +29,7 @@ The objective is to guess the secret word with the correct number of bulls and c
    ```bash
    git clone https://github.com/yourusername/bulls-and-cows.git
    cd bulls-and-cows
-   ```plaintext
+   ```
 
 2. **Ensure you have Python 3 installed**.
 
@@ -34,7 +41,7 @@ The objective is to guess the secret word with the correct number of bulls and c
 2. **Run the game**:
    ```bash
    python game.py
-   ```plaintext
+   ```
 
 3. **Game Modes**:
    - **Manual Guesser**: You enter guesses manually.
@@ -50,7 +57,7 @@ The objective is to guess the secret word with the correct number of bulls and c
    Example:
    ```bash
    python game.py --manual-guesser --manual-answerer
-   ```plaintext
+   ```
 
 ## Code Structure
 
