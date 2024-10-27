@@ -9,7 +9,7 @@
    ^^    ^^
 ```
 
-Welcome to the Bulls and Cows game! This is a classic code-breaking game where the player tries to guess a secret word, and the game provides feedback in terms of "bulls" and "cows."
+Welcome to the Bulls and Cows game! This is a classic code-breaking game where the player tries to guess a four-letter secret word, and the game provides feedback in terms of "bulls" and "cows."
 
 ## Game Overview
 
@@ -17,6 +17,14 @@ Welcome to the Bulls and Cows game! This is a classic code-breaking game where t
 - **Cows**: The number of letters in your guess that are in the word but in the wrong position.
 
 The objective is to guess the secret word with the correct number of bulls and cows.
+
+### How to Play
+
+1. **Start the Game**: Run the game using the instructions in the "Usage" section below.
+2. **Make a Guess**: Enter a four-letter word as your guess.
+3. **Receive Feedback**: After each guess, you'll receive feedback in the form of "bulls" and "cows."
+   - Example: If the secret word is "game" and you guess "gale," you will receive feedback of "2b1c" (2 bulls, 1 cow) because 'g' and 'a' are in the correct positions (bulls), and 'e' is in the word but in the wrong position (cow).
+4. **Continue Guessing**: Use the feedback to refine your guesses until you guess the word correctly with 4 bulls.
 
 ## Features
 
