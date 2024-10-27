@@ -1,11 +1,13 @@
 # Bulls and Cows Game
 
+```
          (__)
          (oo)
   /-------\/
  / |     ||
 *  ||----||
    ^^    ^^
+```
 
 Welcome to the Bulls and Cows game! This is a classic code-breaking game where the player tries to guess a secret word, and the game provides feedback in terms of "bulls" and "cows."
 
