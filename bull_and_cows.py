@@ -93,31 +93,41 @@ class AutoGuesser(Guesser):
         Initialize the AutoGuesser with a list of possible words.
         """
         self.possible_words = list(ALL_WORDS)
+        self.__guess = None
 
-    def get_guess(self) -> str:
+    def get_guess(self, previous_response) -> str:
         """
         Automatically generate a guess by randomly selecting a word from the possible words.
         """
+        if self.__guess:
+            self.__update_possible_words(previous_response)
         if not self.possible_words:
             raise ValueError("No possible words left to guess.")
-        return random.choice(self.possible_words)
+        self.__guess = random.choice(self.possible_words)
+        return self.__guess
 
-    def update_possible_words(self, guess, response):
+    def __update_possible_words(self, response):
         """
         Update the list of possible words based on the response to the guess.
         """
         bulls, cows = parse_response(response)
         self.possible_words = [
             word for word in self.possible_words
-            if self._matches_response(word, guess, bulls, cows)
+            if self._matches_response(word, self.__guess, bulls, cows)
         ]
 
-    def _matches_response(self, word, guess, bulls, cows):
+    def _matches_response(self, word, guess, actual_bulls, actual_cows):
         """
         Check if a word matches the given number of bulls and cows for a guess.
         """
-        actual_bulls = sum(1 for i in range(len(word)) if word[i] == guess[i])
-        actual_cows = sum(min(word.count(c), guess.count(c)) for c in set(guess)) - actual_bulls
+        # actual_bulls = sum(1 for i in range(len(word)) if word[i] == guess[i])
+        # actual_cows = sum(min(word.count(c), guess.count(c)) for c in set(guess)) - actual_bulls
+        cows, bulls = 0, 0
+        for i, c in enumerate(guess):
+            if word[i] == c:
+                bulls += 1
+            elif c in word:
+                cows += 1
         return actual_bulls == bulls and actual_cows == cows
 
 def parse_response(response):
@@ -147,7 +157,8 @@ class GameController:
         turn = 1
         while not self.__is_game_over():
             print(f"Guess {turn}")
-            guess = self.guesser.get_guess()
+            guess = self.guesser.get_guess(self.response)
+            print(guess)
             self.response = self.thinker.get_answer(guess)
             print(self.response)
             turn += 1
