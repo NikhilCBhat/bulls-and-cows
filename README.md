@@ -54,13 +54,15 @@ The objective is to guess the secret word with the correct number of bulls and c
 
 ## Code Structure
 
-- **Guesser**: Abstract base class for guessers.
-- **Answerer**: Abstract base class for answerers.
-- **ManualGuesser**: Class for manual guessing.
-- **AutoGuesser**: Class for automatic guessing.
-- **ManualAnswerer**: Class for manual answering.
-- **AutoAnswerer**: Class for automatic answering.
-- **GameController**: Manages the game flow and interactions between guessers and answerers.
+- **`bulls_and_cows/`**: Contains the main modules for the game.
+  - **`game_controller.py`**: Manages the game flow and interactions between guessers and answerers.
+  - **`guesser.py`**: Contains the `Guesser`, `ManualGuesser`, and `AutoGuesser` classes.
+  - **`answerer.py`**: Contains the `Answerer`, `ManualAnswerer`, and `AutoAnswerer` classes.
+  - **`utils.py`**: Contains utility functions like `load_words` and `parse_response`.
+
+- **`4-letter-words.txt`**: The word list file.
+
+- **`game.py`**: The main script to run the game.
 
 ## Contributing
 
