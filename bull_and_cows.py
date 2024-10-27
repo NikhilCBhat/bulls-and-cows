@@ -3,7 +3,7 @@ import random
 import argparse
 from abc import ABC, abstractmethod
 
-def load_words(file_path):
+def load_words(file_path: str) -> set:
     """
     Load words from the specified file path.
     """
@@ -18,13 +18,13 @@ ALL_WORDS = load_words("4-letter-words-processed-new.txt")
 
 class Guesser(ABC):
     @abstractmethod
-    def get_guess(self) -> str:
+    def get_guess(self, previous_response: str = None) -> str:
         """
         Get a guess from the player.
         """
         pass
 
-    def is_valid(self, guess) -> bool:
+    def is_valid(self, guess: str) -> bool:
         """
         Check if the guess is a valid word.
         """
@@ -34,39 +34,43 @@ class Answerer(ABC):
     pattern = re.compile(r'^[0-4]b[0-4]c$')
 
     @abstractmethod
-    def get_answer(self, guess) -> str:
+    def get_answer(self, guess: str) -> str:
         """
         Get the answer based on the guess.
         """
         pass
 
-    def is_valid(self, answer) -> bool:
+    def is_valid(self, answer: str) -> bool:
         """
         Check if the answer is in the correct format.
         """
         return bool(self.pattern.match(answer))
 
 class AutoAnswerer(Answerer):
-    def __init__(self, word=None) -> None:
+    def __init__(self, word: str = None) -> None:
         """
         Initialize with a secret word or choose one randomly.
         """
         self.__secret_word = word or random.choice(list(ALL_WORDS))
 
-    def get_answer(self, guess) -> str:
+    def get_answer(self, guess: str) -> str:
         """
         Calculate the number of bulls and cows for the guess.
         """
-        cows, bulls = 0, 0
-        for i, c in enumerate(guess):
-            if self.__secret_word[i] == c:
-                bulls += 1
-            elif c in self.__secret_word:
-                cows += 1
+        bulls, cows = self.calculate_bulls_and_cows(guess, self.__secret_word)
         return f"{bulls}b{cows}c"
 
+    @staticmethod
+    def calculate_bulls_and_cows(guess: str, secret_word: str) -> tuple:
+        """
+        Calculate bulls and cows for a given guess and secret word.
+        """
+        bulls = sum(1 for x, y in zip(guess, secret_word) if x == y)
+        cows = sum(min(secret_word.count(c), guess.count(c)) for c in set(guess)) - bulls
+        return bulls, cows
+
 class ManualAnswerer(Answerer):
-    def get_answer(self, guess) -> str:
+    def get_answer(self, guess: str) -> str:
         """
         Prompt the user for the answer.
         """
@@ -77,7 +81,7 @@ class ManualAnswerer(Answerer):
             print("Answer is invalid. Must be in the format 3b1c")
 
 class ManualGuesser(Guesser):
-    def get_guess(self) -> str:
+    def get_guess(self, previous_response: str = None) -> str:
         """
         Prompt the user for a guess.
         """
@@ -95,54 +99,40 @@ class AutoGuesser(Guesser):
         self.possible_words = list(ALL_WORDS)
         self.__guess = None
 
-    def get_guess(self, previous_response) -> str:
+    def get_guess(self, previous_response: str = None) -> str:
         """
         Automatically generate a guess by randomly selecting a word from the possible words.
         """
-        if self.__guess:
+        if self.__guess and previous_response:
             self.__update_possible_words(previous_response)
         if not self.possible_words:
             raise ValueError("No possible words left to guess.")
         self.__guess = random.choice(self.possible_words)
         return self.__guess
 
-    def __update_possible_words(self, response):
+    def __update_possible_words(self, response: str):
         """
         Update the list of possible words based on the response to the guess.
         """
         bulls, cows = parse_response(response)
         self.possible_words = [
             word for word in self.possible_words
-            if self._matches_response(word, self.__guess, bulls, cows)
+            if AutoAnswerer.calculate_bulls_and_cows(word, self.__guess) == (bulls, cows)
         ]
 
-    def _matches_response(self, word, guess, actual_bulls, actual_cows):
-        """
-        Check if a word matches the given number of bulls and cows for a guess.
-        """
-        # actual_bulls = sum(1 for i in range(len(word)) if word[i] == guess[i])
-        # actual_cows = sum(min(word.count(c), guess.count(c)) for c in set(guess)) - actual_bulls
-        cows, bulls = 0, 0
-        for i, c in enumerate(guess):
-            if word[i] == c:
-                bulls += 1
-            elif c in word:
-                cows += 1
-        return actual_bulls == bulls and actual_cows == cows
-
-def parse_response(response):
+def parse_response(response: str) -> tuple:
     """
     Parse the response string to extract the number of bulls and cows.
     """
     response_pattern = re.compile(r'(\d+)b(\d+)c')
     match = response_pattern.match(response)
     if match:
-        return map(int, match.groups())
+        return tuple(map(int, match.groups()))
     else:
         raise ValueError("Invalid response format")
 
 class GameController:
-    def __init__(self, is_manual_answerer=True, is_manual_guesser=True):
+    def __init__(self, is_manual_answerer: bool = True, is_manual_guesser: bool = True):
         """
         Initialize the game controller with the specified modes.
         """
