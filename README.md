@@ -14,6 +14,7 @@ The objective is to guess the secret word with the correct number of bulls and c
 - Play against the computer or manually input responses.
 - Automatic guessing by the computer.
 - Configurable to switch between manual and automatic modes.
+- Supports both manual and automatic answerers.
 
 ## Installation
 
@@ -42,7 +43,14 @@ The objective is to guess the secret word with the correct number of bulls and c
    - **Auto Answerer**: The computer provides feedback automatically.
 
 4. **Switching Modes**:
-   - You can switch between manual and automatic modes by modifying the `GameController` initialization in `bulls_and_cows.py`.
+   - You can switch between manual and automatic modes using command-line arguments:
+     - `--manual-guesser`: Use manual guesser (default is automatic).
+     - `--manual-answerer`: Use manual answerer (default is automatic).
+
+   Example:
+   ```bash
+   python game.py --manual-guesser --manual-answerer
+   ```plaintext
 
 ## Code Structure
 
