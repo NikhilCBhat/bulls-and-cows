@@ -55,13 +55,13 @@ The objective is to guess the secret word with the correct number of bulls and c
    ```
 
 3. **Game Modes**:
-   - **Mode 1: Guess the Word!**: The computer thinks of a word, and you play against it by entering guesses.
+   - **Mode 1: Guess the Word!** The computer thinks of a word, and you play against it by entering guesses.
      - Command: `python game.py --manual-guesser`
-   - **Mode 2: Stump the Computer!**: You think of a word, and answer while the computer guesses.
+   - **Mode 2: Stump the Computer!** You think of a word, and answer while the computer guesses.
      - Command: `python game.py --manual-answerer`
-   - **Mode 3: Pass and Play!**: You and your friend can answer/guess side by side.
+   - **Mode 3: Pass and Play!** You and your friend can answer/guess side by side.
      - Command: `python game.py --manual-guesser --manual-answerer`
-   - **Mode 4: Spectate!**: Watch the computer play the game :)
+   - **Mode 4: Spectate!** Watch the computer play the game :)
      - Command: `python game.py`
 
 ## Code Structure
