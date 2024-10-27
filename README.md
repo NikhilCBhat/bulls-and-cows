@@ -46,7 +46,7 @@ The objective is to guess the secret word with the correct number of bulls and c
 ## Usage
 
 1. **Prepare the word list**:
-   - Ensure you have a file named `4-letter-words-processed-new.txt` in the root directory. This file should contain a list of valid 4-letter words, one per line.
+   - Ensure you have a file named `4-letter-words.txt` in the root directory. This file should contain a list of valid 4-letter words, one per line.
 
 2. **Run the game**:
    ```bash
