@@ -1,5 +1,6 @@
 import re
 import random
+import argparse
 from abc import ABC, abstractmethod
 
 def load_words(file_path):
@@ -28,43 +29,6 @@ class Guesser(ABC):
         Check if the guess is a valid word.
         """
         return guess in ALL_WORDS
-
-
-class AutoGuesser(Guesser):
-    response_pattern = re.compile(r'(\d+)b(\d+)c')
-
-    def __init__(self):
-        """
-        Initialize the AutoGuesser with a list of possible words.
-        """
-        self.possible_words = list(ALL_WORDS)
-
-    def get_guess(self) -> str:
-        """
-        Automatically generate a guess by randomly selecting a word from the possible words.
-        """
-        if not self.possible_words:
-            raise ValueError("No possible words left to guess.")
-        return random.choice(self.possible_words)
-
-    def update_possible_words(self, guess, response):
-        """
-        Update the list of possible words based on the response to the guess.
-        """
-        match = self.response_pattern.match(response)
-        bulls, cows = map(int, match.groups())
-        self.possible_words = [
-            word for word in self.possible_words
-            if self.__matches_response(word, guess, bulls, cows)
-        ]
-
-    def __matches_response(self, word, guess, bulls, cows):
-        """
-        Check if a word matches the given number of bulls and cows for a guess.
-        """
-        actual_bulls = sum(1 for i in range(len(word)) if word[i] == guess[i])
-        actual_cows = sum(min(word.count(c), guess.count(c)) for c in set(guess)) - actual_bulls
-        return actual_bulls == bulls and actual_cows == cows
 
 class Answerer(ABC):
     pattern = re.compile(r'^[0-4]b[0-4]c$')
@@ -123,12 +87,56 @@ class ManualGuesser(Guesser):
                 return guess
             print("Guess is invalid. Must be a 4 letter word")
 
+class AutoGuesser(Guesser):
+    def __init__(self):
+        """
+        Initialize the AutoGuesser with a list of possible words.
+        """
+        self.possible_words = list(ALL_WORDS)
+
+    def get_guess(self) -> str:
+        """
+        Automatically generate a guess by randomly selecting a word from the possible words.
+        """
+        if not self.possible_words:
+            raise ValueError("No possible words left to guess.")
+        return random.choice(self.possible_words)
+
+    def update_possible_words(self, guess, response):
+        """
+        Update the list of possible words based on the response to the guess.
+        """
+        bulls, cows = parse_response(response)
+        self.possible_words = [
+            word for word in self.possible_words
+            if self._matches_response(word, guess, bulls, cows)
+        ]
+
+    def _matches_response(self, word, guess, bulls, cows):
+        """
+        Check if a word matches the given number of bulls and cows for a guess.
+        """
+        actual_bulls = sum(1 for i in range(len(word)) if word[i] == guess[i])
+        actual_cows = sum(min(word.count(c), guess.count(c)) for c in set(guess)) - actual_bulls
+        return actual_bulls == bulls and actual_cows == cows
+
+def parse_response(response):
+    """
+    Parse the response string to extract the number of bulls and cows.
+    """
+    response_pattern = re.compile(r'(\d+)b(\d+)c')
+    match = response_pattern.match(response)
+    if match:
+        return map(int, match.groups())
+    else:
+        raise ValueError("Invalid response format")
+
 class GameController:
-    def __init__(self, is_manual_answerer=True, is_manual_player=True):
+    def __init__(self, is_manual_answerer=True, is_manual_guesser=True):
         """
         Initialize the game controller with the specified modes.
         """
-        self.guesser = ManualGuesser()
+        self.guesser = ManualGuesser() if is_manual_guesser else AutoGuesser()
         self.thinker = ManualAnswerer() if is_manual_answerer else AutoAnswerer()
         self.response = None
 
@@ -152,5 +160,10 @@ class GameController:
         return self.response == "4b0c"
 
 if __name__ == "__main__":
-    gc = GameController(False)
+    parser = argparse.ArgumentParser(description="Play the Bulls and Cows game.")
+    parser.add_argument('--manual-guesser', action='store_true', help="Use manual guesser (default is automatic).")
+    parser.add_argument('--manual-answerer', action='store_true', help="Use manual answerer (default is automatic).")
+    args = parser.parse_args()
+
+    gc = GameController(is_manual_answerer=args.manual_answerer, is_manual_guesser=args.manual_guesser)
     gc.play()
